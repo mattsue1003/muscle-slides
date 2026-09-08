@@ -1,0 +1,981 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>打造不求人的「肌」本功｜肌力訓練互動簡報</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#12343B;
+  --orange:#E8552D;
+  --amber:#F4A93C;
+  --teal:#028090;
+  --paper:#FFF9F0;
+  --line:#E5D9C6;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--ink);}
+body{font-family:"Noto Sans TC","Microsoft JhengHei","PingFang TC",sans-serif;color:var(--ink);}
+
+.deck{position:fixed;inset:0;}
+.slide{
+  position:absolute;inset:0;
+  padding:4.2vh 4.5vw 14vh;
+  display:none;flex-direction:column;
+  background:var(--paper);
+  overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+}
+.slide > *{flex-shrink:0;}
+.slide::-webkit-scrollbar{width:1vh;}
+.slide::-webkit-scrollbar-thumb{background:var(--amber);border-radius:1vh;}
+.slide.active{display:flex;animation:fadein .35s ease;}
+@keyframes fadein{from{opacity:0;}to{opacity:1;}}
+.slide.dark{background:var(--ink);color:#FFF9F0;}
+
+/* ---------- 文字層級（超大字級，填滿版面） ---------- */
+.kicker{font-size:2.1vw;font-weight:700;color:var(--orange);letter-spacing:.15em;margin-bottom:1.2vh;}
+.dark .kicker{color:var(--amber);}
+h1{font-size:6.2vw;font-weight:900;line-height:1.22;}
+h2{font-size:4.1vw;font-weight:900;line-height:1.25;margin-bottom:2.2vh;}
+h3{font-size:2.8vw;font-weight:700;line-height:1.3;}
+.big-num{font-size:12vw;font-weight:900;color:var(--orange);line-height:1;}
+.body{font-size:2.35vw;line-height:1.55;}
+.small{font-size:1.7vw;line-height:1.5;color:#4a5f64;}
+.dark .small{color:#c9d6d2;}
+.src{font-size:1.45vw;color:#7a8a86;margin-top:auto;padding-top:1.5vh;}
+.dark .src{color:#9db3ad;}
+.hl{color:var(--orange);font-weight:900;}
+.hl-t{color:var(--teal);font-weight:900;}
+.dark .hl-t{color:#7fd4dc;}
+
+/* ---------- 版面元件 ---------- */
+.center{align-items:center;justify-content:center;text-align:center;}
+.row{display:flex;gap:2.2vw;align-items:stretch;}
+.col{flex:1;display:flex;flex-direction:column;}
+.card{
+  background:#fff;border:.28vh solid var(--line);border-radius:1.6vh;
+  padding:2.4vh 1.8vw;
+}
+.card.accent{border-color:var(--orange);border-width:.45vh;}
+.card.teal{border-color:var(--teal);border-width:.45vh;}
+.badge{
+  display:inline-block;background:var(--orange);color:#fff;
+  font-size:1.9vw;font-weight:900;padding:.6vh 1.4vw;border-radius:1vh;
+  margin-bottom:1.2vh;
+}
+.badge.t{background:var(--teal);}
+.badge.a{background:var(--amber);color:var(--ink);}
+
+/* ---------- OX 迷思互動 ---------- */
+.ox-wrap{display:flex;gap:3vw;justify-content:center;margin:2.5vh 0;}
+.ox-btn{
+  font-family:inherit;font-size:3.4vw;font-weight:900;color:var(--ink);
+  background:#fff;border:.6vh solid var(--ink);border-radius:2vh;
+  padding:2.2vh 5vw;cursor:pointer;transition:transform .12s ease;
+}
+.ox-btn:hover{transform:scale(1.05);}
+.ox-btn:active{transform:scale(.97);}
+.ox-btn.picked-right{background:var(--teal);border-color:var(--teal);color:#fff;}
+.ox-btn.picked-wrong{background:#ccc;border-color:#aaa;color:#666;}
+.reveal{display:none;}
+.reveal.open{display:block;animation:pop .3s ease;}
+@keyframes pop{from{opacity:0;transform:translateY(1.5vh);}to{opacity:1;transform:none;}}
+.verdict{font-size:3.2vw;font-weight:900;margin-bottom:1vh;}
+.verdict.no{color:var(--orange);}
+.verdict.yes{color:var(--teal);}
+
+/* ---------- 選擇題 ---------- */
+.quiz{display:flex;gap:2vw;margin:2.5vh 0;}
+.q-opt{
+  flex:1;font-family:inherit;font-size:3vw;font-weight:900;color:var(--ink);
+  background:#fff;border:.5vh solid var(--line);border-radius:1.8vh;
+  padding:3vh 1vw;cursor:pointer;transition:transform .12s ease;
+}
+.q-opt:hover{transform:translateY(-.6vh);border-color:var(--amber);}
+.q-opt.right{background:var(--teal);border-color:var(--teal);color:#fff;}
+.q-opt.wrong{background:#eee;border-color:#ddd;color:#aaa;}
+.q-opt .opt-sub{display:block;font-size:1.7vw;font-weight:500;margin-top:.8vh;}
+
+/* ---------- 點擊揭示清單 ---------- */
+.tap-list{display:grid;grid-template-columns:1fr 1fr;gap:1.6vh 1.6vw;}
+.tap-item{
+  background:#fff;border:.35vh solid var(--line);border-radius:1.4vh;
+  padding:1.8vh 1.5vw;cursor:pointer;font-size:2.2vw;font-weight:700;
+  display:flex;align-items:center;gap:1vw;
+}
+.tap-item .ans{display:none;color:var(--teal);font-weight:900;}
+.tap-item.on{border-color:var(--teal);}
+.tap-item.on .ans{display:inline;}
+
+/* ---------- 計時器 ---------- */
+.timer-box{display:flex;flex-direction:column;align-items:center;gap:1.5vh;}
+.timer-digits{font-size:16vw;font-weight:900;color:var(--orange);line-height:1;font-variant-numeric:tabular-nums;}
+.timer-digits.done{color:var(--teal);}
+.timer-btn{
+  font-family:inherit;font-size:2.8vw;font-weight:900;color:#fff;
+  background:var(--orange);border:none;border-radius:2vh;
+  padding:1.8vh 5vw;cursor:pointer;
+}
+.timer-btn:active{transform:scale(.97);}
+.timer-btn.reset{background:var(--ink);}
+
+/* ---------- 動作頁 ---------- */
+.move-head{display:flex;align-items:baseline;gap:1.5vw;margin-bottom:1.5vh;}
+.move-emoji{font-size:5vw;line-height:1;}
+.steps{list-style:none;counter-reset:s;}
+.steps li{
+  counter-increment:s;font-size:2.35vw;line-height:1.5;font-weight:500;
+  margin-bottom:1.4vh;padding-left:4.2vw;position:relative;
+}
+.steps li::before{
+  content:counter(s);position:absolute;left:0;top:.2vh;
+  width:3vw;height:3vw;border-radius:50%;background:var(--ink);color:#fff;
+  font-size:1.9vw;font-weight:900;display:flex;align-items:center;justify-content:center;
+}
+.dose{
+  background:var(--ink);color:#fff;border-radius:1.4vh;
+  font-size:2.1vw;font-weight:900;padding:1.4vh 1.5vw;text-align:center;margin-bottom:1.6vh;
+}
+.lv{border-radius:1.4vh;padding:1.5vh 1.5vw;font-size:1.95vw;line-height:1.45;margin-bottom:1.4vh;}
+.lv.up{background:#FDEBD2;border-left:.9vw solid var(--amber);}
+.lv.down{background:#E0F0F1;border-left:.9vw solid var(--teal);}
+.lv b{font-size:2.1vw;}
+.safety{font-size:1.85vw;color:var(--orange);font-weight:700;}
+
+/* ---------- 表格 ---------- */
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:1.4vh;overflow:hidden;}
+th,td{padding:1.7vh 1vw;text-align:center;font-size:2.3vw;border-bottom:.2vh solid var(--line);}
+th{background:var(--ink);color:#fff;font-weight:900;font-size:2.2vw;}
+td:first-child{font-weight:900;}
+tr:last-child td{border-bottom:none;}
+
+/* ---------- 長條圖 ---------- */
+.bars{display:flex;flex-direction:column;gap:2.6vh;margin-top:1vh;}
+.bar-row{display:flex;align-items:center;gap:1.5vw;}
+.bar-label{width:16vw;font-size:2.5vw;font-weight:900;text-align:right;}
+.bar-track{flex:1;background:#EFE7D8;border-radius:1.2vh;height:6.5vh;position:relative;overflow:hidden;}
+.bar-fill{height:100%;border-radius:1.2vh;display:flex;align-items:center;padding-left:1.2vw;color:#fff;font-size:2vw;font-weight:900;white-space:nowrap;}
+
+/* ---------- 導覽 ---------- */
+.nav{
+  position:fixed;bottom:0;left:0;right:0;height:7vh;z-index:50;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 2vw;background:rgba(18,52,59,.92);color:#fff;
+}
+.nav button{
+  font-family:inherit;font-size:2vw;font-weight:900;color:#fff;
+  background:transparent;border:.3vh solid rgba(255,255,255,.5);
+  border-radius:1.2vh;padding:.7vh 2.2vw;cursor:pointer;
+}
+.nav button:hover{background:rgba(255,255,255,.15);}
+.page-ind{font-size:1.8vw;font-weight:700;letter-spacing:.1em;}
+.progress{position:fixed;top:0;left:0;height:.9vh;background:var(--orange);z-index:60;transition:width .25s ease;}
+
+/* ---------- 帶領提示 ---------- */
+.tip-toggle{
+  background:var(--amber) !important;color:var(--ink) !important;border:none !important;
+}
+.tipbar{
+  display:none;position:fixed;bottom:7vh;left:0;right:0;z-index:45;
+  background:var(--amber);color:var(--ink);
+  padding:1.6vh 3vw;font-size:1.9vw;line-height:1.45;font-weight:700;
+}
+.tipbar.show{display:block;}
+.tipbar::before{content:"💡 帶領提示｜";font-weight:900;}
+
+@media (max-aspect-ratio: 4/3){
+  .body{font-size:2.8vw;}
+}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="deck" id="deck">
+<!-- 1 封面 -->
+<section class="slide dark center" data-tip="開場先請大家原地做一次「從椅子站起來」，感受今天的主題就在身體裡。">
+  <div class="kicker">本週主題｜自主肌力訓練</div>
+  <h1>打造不求人的<br><span style="color:var(--amber)">「肌」本功</span></h1>
+  <div class="body" style="margin-top:3vh;font-size:2.8vw;">練好肌力，想去哪都容易</div>
+  <div class="small" style="margin-top:4vh;">起身・走路・爬梯・提物 —— 有尊嚴的獨立生活，從強健的雙腿開始</div>
+</section>
+
+<!-- 2 暖身提問 -->
+<section class="slide" data-tip="先不揭曉答案，請左右鄰座互相猜一猜、舉手表決，再點選項揭曉。">
+  <div class="kicker">暖身猜一猜</div>
+  <h2>40 歲以後，如果都不訓練，<br>肌肉量大約每 10 年流失多少？</h2>
+  <div class="quiz">
+    <button class="q-opt" onclick="quizPick(this,false)">約 3%<span class="opt-sub">少少的，不用擔心</span></button>
+    <button class="q-opt" onclick="quizPick(this,true)">約 8%<span class="opt-sub">相當於一屆總統任期<br>就少掉近一成</span></button>
+    <button class="q-opt" onclick="quizPick(this,false)">約 20%<span class="opt-sub">五分之一都沒了</span></button>
+  </div>
+  <div class="reveal card accent">
+    <div class="body">正確答案是 <span class="hl">約 8%</span>。而且 <span class="hl">70 歲之後流失還會加速</span>，每 10 年可高達約 15%。好消息是：這條下坡路，<span class="hl-t">訓練可以踩煞車、甚至倒著走</span>。</div>
+  </div>
+  <div class="src">參考：Volpi 等人肌肉老化研究；國內衛教資料常引用「40 歲後每 10 年流失約 8%」</div>
+</section>
+
+<!-- 3 三種流失速度 -->
+<section class="slide" data-tip="用「電梯壞掉那天」的例子帶入：平常沒感覺，突然要爬五樓才發現力氣不夠——因為爆發力走得最快。">
+  <div class="kicker">關鍵數據</div>
+  <h2>老化流失的不只是「肌肉量」——<br><span class="hl">力氣和速度掉得更快</span></h2>
+  <div class="bars">
+    <div class="bar-row">
+      <div class="bar-label">肌肉量</div>
+      <div class="bar-track"><div class="bar-fill" style="width:38%;background:var(--teal);">每年約流失 1%</div></div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">肌力</div>
+      <div class="bar-track"><div class="bar-fill" style="width:66%;background:var(--amber);color:var(--ink);">每年約流失 1.5～3%</div></div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">爆發力</div>
+      <div class="bar-track"><div class="bar-fill" style="width:95%;background:var(--orange);">流失最快！起身、跨步、反應都靠它</div></div>
+    </div>
+  </div>
+  <div class="body" style="margin-top:2.5vh;">爆發力＝<b>快速出力的能力</b>：從椅子站起、綠燈快步過馬路、絆到時腳跨出去撐住——<span class="hl">防跌靠的就是它</span>。</div>
+  <div class="src">參考：European Review of Aging and Physical Activity 系統性回顧（2022）——長者爆發力年流失率大於肌力</div>
+</section>
+
+<!-- 4 為什麼重要 -->
+<section class="slide" data-tip="請學員說說「最近哪件事開始覺得吃力」，把答案接到這四格上。">
+  <div class="kicker">肌力＝不求人的本錢</div>
+  <h2>肌力好，這些事都不用開口求人</h2>
+  <div class="row" style="flex:1;">
+    <div class="col card"><div style="font-size:4.5vw;">🪑</div><h3>自己起身</h3><div class="small">從椅子、馬桶、床上起身不用人扶</div></div>
+    <div class="col card"><div style="font-size:4.5vw;">🪜</div><h3>自己上樓</h3><div class="small">爬樓梯、上下公車、跨過門檻</div></div>
+    <div class="col card"><div style="font-size:4.5vw;">🛍️</div><h3>自己提物</h3><div class="small">買菜、提水、抱孫子</div></div>
+    <div class="col card"><div style="font-size:4.5vw;">🛡️</div><h3>自己站穩</h3><div class="small">絆到能撐住，大幅降低跌倒骨折風險</div></div>
+  </div>
+  <div class="card teal" style="margin-top:2vh;">
+    <div class="body">大型統合分析：<span class="hl-t">每週只要 30～60 分鐘肌力訓練</span>，就與整體死亡風險降低約 1～2 成有關。</div>
+  </div>
+  <div class="src">參考：British Journal of Sports Medicine 統合分析（Momma 等，2022）</div>
+</section>
+
+<!-- 5 段落頁：迷思 -->
+<section class="slide dark center" data-tip="說明玩法：每題先全班舉手表決 ⭕ 或 ❌，再點按鈕揭曉。答錯沒關係，答錯才記得牢。">
+  <div class="kicker">第一部分</div>
+  <h1>迷思大破解</h1>
+  <div class="body" style="margin-top:3vh;font-size:2.7vw;">這些話你一定聽過——<br>但最新研究怎麼說？我們一題一題來。</div>
+  <div class="small" style="margin-top:3vh;">玩法：覺得對的舉 ⭕、覺得錯的比 ❌，表決完再揭曉答案</div>
+</section>
+
+<!-- 6 迷思1 -->
+<section class="slide" data-tip="表決後追問：「為什麼覺得危險？」把擔心說出來，下一頁用研究一一回應。">
+  <div class="badge">迷思 1</div>
+  <h2>「年紀大了，<br>不適合做比較重的訓練」</h2>
+  <div class="ox-wrap">
+    <button class="ox-btn" onclick="oxPick(this,false)">⭕ 對</button>
+    <button class="ox-btn" onclick="oxPick(this,true)">❌ 錯</button>
+  </div>
+  <div class="reveal card accent">
+    <div class="verdict no">❌ 錯！研究結果正好相反</div>
+    <div class="body">丹麥大型隨機對照研究（LISA）發現：退休年齡開始做<span class="hl">較重的阻力訓練</span>，效果不但更好，還能<span class="hl">維持整整 4 年</span>。下一頁看細節。</div>
+  </div>
+</section>
+
+<!-- 7 LISA 細節 -->
+<section class="slide" data-tip="重點講「只練一年、效果撐四年」這件事——像存退休金一樣，肌力也能『存起來』。">
+  <div class="kicker">高品質證據｜丹麥 LISA 研究（2024 年發表 4 年追蹤）</div>
+  <h2>451 位退休族，分三組比一比</h2>
+  <div class="row">
+    <div class="col card accent">
+      <div class="badge">較重阻力訓練</div>
+      <div class="body">每週 3 次、一年<br>約 7～8 成最大力量<br>每個動作 6～12 下</div>
+      <div class="body" style="margin-top:1.5vh;"><span class="hl">4 年後腿部肌力<br>維持在原點，沒有退步</span></div>
+    </div>
+    <div class="col card">
+      <div class="badge a">中等強度訓練</div>
+      <div class="body">每週 3 次、一年<br>彈力帶＋自身體重<br>10～18 下</div>
+      <div class="body" style="margin-top:1.5vh;">4 年後肌力<br><b>仍然下滑</b></div>
+    </div>
+    <div class="col card">
+      <div class="badge" style="background:#8a9a97;">不運動對照組</div>
+      <div class="body">維持原本生活</div>
+      <div class="body" style="margin-top:1.5vh;">4 年後肌力<br><b>明顯下滑</b></div>
+    </div>
+  </div>
+  <div class="body" style="margin-top:2vh;">結論：<span class="hl">強度給足，練 1 年、效果存 4 年</span>。前提是循序漸進、動作正確——這正是今天課程要教的。</div>
+  <div class="src">Bloch-Ibenfeldt 等，BMJ Open Sport &amp; Exercise Medicine 2024；平均 67 歲開始、71 歲完成追蹤</div>
+</section>
+
+<!-- 8 迷思2 -->
+<section class="slide" data-tip="很多勤走路的學員會答「對」。肯定走路的價值（心肺、三高），再區分「有氧」與「肌力」是兩個不同的存摺。">
+  <div class="badge">迷思 2</div>
+  <h2>「我每天走一萬步，<br>肌力就夠了」</h2>
+  <div class="ox-wrap">
+    <button class="ox-btn" onclick="oxPick(this,false)">⭕ 對</button>
+    <button class="ox-btn" onclick="oxPick(this,true)">❌ 錯</button>
+  </div>
+  <div class="reveal card accent">
+    <div class="verdict no">❌ 走路很好，但它是「有氧存摺」</div>
+    <div class="body">走路顧<span class="hl-t">心肺、血壓、血糖</span>，但對肌肉的刺激太輕，<span class="hl">存不進「肌力存摺」</span>。LISA 研究裡連中等強度都擋不住流失，何況散步。世界衛生組織建議 65 歲以上：有氧之外，<span class="hl">每週至少 2 天肌力訓練</span>——兩本存摺都要存。</div>
+  </div>
+  <div class="src">參考：WHO 身體活動指引（2020）；LISA 研究（2024）</div>
+</section>
+
+<!-- 9 迷思3 -->
+<section class="slide" data-tip="這題是全場最激勵的一題，揭曉後停留久一點，請學員唸出「174%」。">
+  <div class="badge">迷思 3</div>
+  <h2>「七、八十歲才開始練，<br>已經來不及了」</h2>
+  <div class="ox-wrap">
+    <button class="ox-btn" onclick="oxPick(this,false)">⭕ 對</button>
+    <button class="ox-btn" onclick="oxPick(this,true)">❌ 錯</button>
+  </div>
+  <div class="reveal card accent">
+    <div class="verdict no">❌ 錯！90 歲練都有效</div>
+    <div class="body">經典研究找來平均 <span class="hl">90 歲</span>的機構住民做漸進式阻力訓練，短短 <span class="hl">8 週</span>：腿部肌力平均提升 <span class="big-num" style="font-size:7vw;">+174%</span>　走路速度也快了近五成。</div>
+    <div class="body" style="margin-top:1vh;">肌肉是全身<span class="hl-t">最不會嫌你老</span>的器官——什麼時候開始，它就什麼時候回應你。</div>
+  </div>
+  <div class="src">Fiatarone 等，發表於《美國醫學會雜誌》(JAMA, 1990)，86–96 歲高齡受試者</div>
+</section>
+
+<!-- 10 迷思4 -->
+<section class="slide" data-tip="先問「誰因為怕傷腎，肉都不太敢吃？」通常不少人。強調：腎功能正常者不必怕，有腎臟病者才需與醫師討論。">
+  <div class="badge">迷思 4</div>
+  <h2>「老人家蛋白質吃多了<br>會傷腎，少吃為妙」</h2>
+  <div class="ox-wrap">
+    <button class="ox-btn" onclick="oxPick(this,false)">⭕ 對</button>
+    <button class="ox-btn" onclick="oxPick(this,true)">❌ 錯</button>
+  </div>
+  <div class="reveal card accent">
+    <div class="verdict no">❌ 對健康長者來說，吃不夠才是大問題</div>
+    <div class="body">2022 年亞洲肌少症工作小組建議：長者每天每公斤體重<span class="hl">至少 1.0 公克</span>蛋白質；已有肌少症或有在訓練的人<span class="hl">至少 1.2 公克</span>——比年輕人的標準還高。蛋白質是肌肉的水泥，<span class="hl-t">光訓練不吃，房子蓋不起來</span>。</div>
+    <div class="small" style="margin-top:1vh;">※ 已有腎臟病、糖尿病等慢性病者，攝取量請與醫師、營養師討論。</div>
+  </div>
+  <div class="src">參考：亞洲肌少症工作小組 AWGS 2022；歐洲臨床營養學會 ESPEN、PROT-AGE 指引</div>
+</section>
+
+<!-- 11 蛋白質怎麼吃 -->
+<section class="slide" data-tip="請大家伸出手掌，直接用掌心當量具記住份量——不用發任何表單。">
+  <div class="kicker">怎麼吃才長肌肉</div>
+  <h2>記住兩個口訣：<span class="hl">一掌心 × 三餐</span></h2>
+  <div class="row">
+    <div class="col card">
+      <div style="font-size:5vw;">✋</div>
+      <h3>每餐一掌心</h3>
+      <div class="body">豆、魚、蛋、肉<br>約等於 20～30 公克蛋白質<br>剛好啟動一次「肌肉合成開關」</div>
+    </div>
+    <div class="col card">
+      <div style="font-size:5vw;">🍽️</div>
+      <h3>三餐平均分</h3>
+      <div class="body">一次吃太多身體用不完<br><span class="hl">早餐最常吃不夠</span>——<br>加顆蛋、一杯豆漿或牛奶</div>
+    </div>
+    <div class="col card">
+      <div style="font-size:5vw;">⏰</div>
+      <h3>練完快補</h3>
+      <div class="body">運動後盡快補充一份蛋白質<br>合成效率更好<br>（例：運動完喝豆漿）</div>
+    </div>
+  </div>
+  <div class="card teal" style="margin-top:2vh;">
+    <div class="body">換算範例：<b>60 公斤</b>的長者，一天約需 <span class="hl-t">60～72 公克</span>蛋白質 ≒ 每餐 2 份豆魚蛋肉（約 2 兩肉或 1 盒嫩豆腐）＋乳品。</div>
+  </div>
+</section>
+
+<!-- 問答：練完馬上喝？ -->
+<section class="slide" data-tip="先讓學員選，通常會選「黃金30分鐘」。揭曉時強調：對長輩來說「練完順手補」仍是最好記的好習慣。">
+  <div class="badge a">問答加碼</div>
+  <h2>「重訓完馬上喝蛋白質，<br>效果會比較好」——對嗎？</h2>
+  <div class="quiz">
+    <button class="q-opt" onclick="quizPick(this,false)">對！<span class="opt-sub">只有黃金 30 分鐘<br>錯過就白練了</span></button>
+    <button class="q-opt" onclick="quizPick(this,true)">對，但不用搶秒<span class="opt-sub">運動前後幾小時內<br>補到都有效</span></button>
+    <button class="q-opt" onclick="quizPick(this,false)">錯<span class="opt-sub">什麼時候喝<br>完全沒差</span></button>
+  </div>
+  <div class="reveal card accent">
+    <div class="body">研究回顧發現：所謂「合成窗口」<span class="hl">比想像中寬得多</span>，真正決定成效的是<span class="hl-t">一整天的總量與三餐分配</span>。不過——練完順手補一份（一杯豆漿、牛奶、一顆蛋），是<span class="hl">最不會忘記</span>的好習慣，對長者尤其實用。</div>
+  </div>
+  <div class="src">參考：Schoenfeld &amp; Aragon 蛋白質攝取時機系統性回顧（國際運動營養學會期刊）</div>
+</section>
+
+<!-- 問答：植物 vs 動物蛋白 -->
+<section class="slide" data-tip="吃素的學員常擔心練不出肌肉——特別點名黃豆製品是植物界優等生，給他們信心。">
+  <div class="badge a">問答加碼</div>
+  <h2>植物性蛋白質和動物性蛋白質，<br>哪個比較好？</h2>
+  <div class="quiz">
+    <button class="q-opt" onclick="quizPick(this,false)">🥩 動物性<span class="opt-sub">才長得出肌肉</span></button>
+    <button class="q-opt" onclick="quizPick(this,false)">🌱 植物性<span class="opt-sub">比較健康</span></button>
+    <button class="q-opt" onclick="quizPick(this,true)">🤝 各有強項<span class="opt-sub">搭配吃最聰明</span></button>
+  </div>
+  <div class="reveal">
+    <div class="row">
+      <div class="col card">
+        <div class="badge">動物性：效率高</div>
+        <div class="body">魚、蛋、奶、雞肉——胺基酸完整、吸收率高、白胺酸多，<b>長肌肉的效率較好</b>；牙口不好可選蒸蛋、鯛魚、嫩豆腐等軟嫩質地。</div>
+      </div>
+      <div class="col card teal">
+        <div class="badge t">植物性：附加價值高</div>
+        <div class="body">附帶纖維與好油脂、對心血管友善；<span class="hl-t">黃豆製品是優等生</span>——豆漿、豆腐、豆干、毛豆，吃素也能練出肌肉。</div>
+      </div>
+    </div>
+    <div class="body" style="margin-top:1.5vh;">結論：<span class="hl">量吃夠、來源多樣</span>，比爭論哪邊好更重要。</div>
+  </div>
+  <div class="src">參考：PROT-AGE／ESPEN 高齡蛋白質指引；大型追蹤研究顯示植物蛋白攝取與較低死亡風險相關</div>
+</section>
+
+<!-- 12 迷思5 -->
+<section class="slide" data-tip="這題答案是「一半對」——肯定勞動的價值，但用「有點吃力、越來越吃力」原則說明差別。">
+  <div class="badge">迷思 5</div>
+  <h2>「我每天做家事、種菜，<br>就算有練肌力了」</h2>
+  <div class="ox-wrap">
+    <button class="ox-btn" onclick="oxPick(this,false)">⭕ 對</button>
+    <button class="ox-btn" onclick="oxPick(this,true)">❌ 錯</button>
+  </div>
+  <div class="reveal card accent">
+    <div class="verdict no">❌ 勞動是活動，不等於訓練</div>
+    <div class="body">肌肉要變強，必須符合<span class="hl">「超負荷」</span>：感覺<b>有點吃力</b>，而且<b>越練越加量</b>。家事種菜是熟悉的固定負荷，身體早就適應了。差別在——</div>
+    <div class="body" style="margin-top:1vh;">🧺 活動：做得完就好　💪 訓練：<span class="hl-t">最後 2～3 下要有「快撐不住」的感覺</span></div>
+  </div>
+</section>
+
+<!-- 問答：跑步長肌肉？ -->
+<section class="slide" data-tip="有跑步習慣的學員先請他們分享，肯定心肺效益後再區分：跑步是有氧存摺，長肌肉要靠阻力。">
+  <div class="badge a">問答加碼</div>
+  <h2>跑步（快走）可以長肌肉嗎？</h2>
+  <div class="quiz">
+    <button class="q-opt" onclick="quizPick(this,false)">可以<span class="opt-sub">跑越多、肌肉越多</span></button>
+    <button class="q-opt" onclick="quizPick(this,true)">幾乎不行<span class="opt-sub">跑步練的是心肺</span></button>
+    <button class="q-opt" onclick="quizPick(this,false)">看年紀<span class="opt-sub">年輕人跑才會長</span></button>
+  </div>
+  <div class="reveal card accent">
+    <div class="body">跑步、快走屬於<span class="hl-t">耐力運動</span>：對心肺、血管、耐力很好，但給肌肉的「變大變壯」訊號太弱——所以馬拉松選手都偏瘦，而且<span class="hl">教練還會要求他們另外做肌力訓練</span>來保護雙腿。想長肌肉，一定要有「阻力」＋「有點吃力」＋「漸進加量」三元素。</div>
+  </div>
+</section>
+
+<!-- 問答：傷膝傷腰？ -->
+<section class="slide" data-tip="這是阻礙長輩開始訓練的最大心魔。揭曉後補一句：真正傷關節的是「不動」與「突然亂動」。">
+  <div class="badge">迷思 6</div>
+  <h2>「跑步傷膝蓋、重訓傷腰，<br>年紀大還是少碰為妙」</h2>
+  <div class="ox-wrap">
+    <button class="ox-btn" onclick="oxPick(this,false)">⭕ 對</button>
+    <button class="ox-btn" onclick="oxPick(this,true)">❌ 錯</button>
+  </div>
+  <div class="reveal">
+    <div class="row">
+      <div class="col card accent">
+        <div class="badge">跑步與膝蓋</div>
+        <div class="body">統合 25 篇研究、12 萬多人：<span class="hl">休閒跑者的膝／髖退化性關節炎比例約 3.5%</span>，反而<b>低於不運動的人（約 10.2%）</b>；只有長年高強度競技跑者較高。適量跑、規律動，關節更健康。</div>
+      </div>
+      <div class="col card teal">
+        <div class="badge t">重訓與腰、膝</div>
+        <div class="body">有指導的阻力訓練<span class="hl-t">受傷率比多數球類運動還低</span>。強壯的大腿與臀部肌肉，正是膝蓋的避震器、腰椎的天然護腰——<b>不練才容易受傷</b>。前提：循序漸進、動作正確。</div>
+      </div>
+    </div>
+  </div>
+  <div class="src">參考：Alentorn-Geli 等統合分析，《骨科與運動物理治療期刊》(JOSPT, 2017)；阻力訓練傷害流行病學研究</div>
+</section>
+
+<!-- 問答：壽命比較短？ -->
+<section class="slide" data-tip="先問「這個印象是從哪裡來的？」多半是新聞裡的極端健美選手——用「極端個案 vs 一般訓練者」拆解。">
+  <div class="badge">迷思 7</div>
+  <h2>「有在重訓的人，<br>好像平均壽命比較短？」</h2>
+  <div class="ox-wrap">
+    <button class="ox-btn" onclick="oxPick(this,false)">⭕ 對</button>
+    <button class="ox-btn" onclick="oxPick(this,true)">❌ 錯</button>
+  </div>
+  <div class="reveal card accent">
+    <div class="verdict no">❌ 剛好相反——適量重訓的人活得更久</div>
+    <div class="body">統合 16 篇長期追蹤研究：<span class="hl">每週 30～60 分鐘肌力訓練</span>，整體死亡、心血管疾病、癌症風險都<span class="hl">降低約 1～2 成</span>。「壽命短」的印象多來自<b>極端職業健美＋藥物濫用的個案</b>，不能代表一般訓練者。</div>
+    <div class="body" style="margin-top:1vh;">同一研究也發現效益呈<span class="hl-t">「適量最好」的曲線</span>——練太多好處不再增加，但一般人離「太多」還非常遠，放心練。</div>
+  </div>
+  <div class="src">參考：Momma 等統合分析，《英國運動醫學期刊》(BJSM, 2022)</div>
+</section>
+
+<!-- 13 段落頁：練對方法 -->
+<section class="slide dark center" data-tip="轉場：迷思破完，接下來把「知道」變「做到」。">
+  <div class="kicker">第二部分</div>
+  <h1>練對方法</h1>
+  <div class="body" style="margin-top:3vh;font-size:2.7vw;">同樣花時間，練對方法效果差很多。<br>兩個關鍵：<span style="color:var(--amber)">強度</span>與<span style="color:var(--amber)">速度</span>。</div>
+</section>
+
+<!-- 問答：爆發力差在哪 -->
+<section class="slide" data-tip="讓學員兩兩討論 30 秒再選。選完不急著講理論，直接接下一頁「快快起、慢慢落」示範。">
+  <div class="badge a">問答加碼</div>
+  <h2>「爆發力訓練」和一般的<br>肌力訓練，差在哪裡？</h2>
+  <div class="quiz">
+    <button class="q-opt" onclick="quizPick(this,false)">🏋️ 舉的重量<span class="opt-sub">爆發力要舉更重</span></button>
+    <button class="q-opt" onclick="quizPick(this,true)">⚡ 出力的速度<span class="opt-sub">同樣動作，起身快一點</span></button>
+    <button class="q-opt" onclick="quizPick(this,false)">🧰 用的器材<span class="opt-sub">要有專門機器才行</span></button>
+  </div>
+  <div class="reveal card teal">
+    <div class="body">答案是<span class="hl-t">速度</span>！同一個坐站、同一條彈力帶，<b>出力那一下刻意加快</b>，就從肌力訓練變成爆發力訓練——不用換器材、不用加重量。下一頁看口訣和研究證據。</div>
+  </div>
+</section>
+
+<!-- 14 快起慢落 -->
+<section class="slide" data-tip="全班一起用椅子示範一次「快起、慢落」，數 1 上、1-2-3 下，體感立刻建立。">
+  <div class="kicker">解答與證據</div>
+  <h2>口訣：<span class="hl">快快起、慢慢落</span></h2>
+  <div class="row">
+    <div class="col card accent">
+      <div class="badge">出力時：快</div>
+      <div class="body">站起來、推出去、拉回來時<br><span class="hl">用最快的速度、穩穩發力</span><br>——這練的是流失最快的「爆發力」</div>
+    </div>
+    <div class="col card teal">
+      <div class="badge t">放下時：慢</div>
+      <div class="body">坐回去、放下時<br><span class="hl-t">數 3 秒慢慢控制</span><br>——離心控制練肌肉，也保護關節、練下樓梯的煞車力</div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:2vh;">
+    <div class="body">統合分析（20 個隨機試驗）：加入速度元素的訓練，對長者的<span class="hl">身體功能（起身、走路、上下樓）改善更明顯</span>；追蹤研究也發現，爆發力比單純力氣<span class="hl">更能預測長壽</span>。</div>
+  </div>
+  <div class="src">參考：JAMA Network Open 統合分析（2022）；Mayo Clinic Proceedings 前瞻研究</div>
+</section>
+
+<!-- 15 訓練處方 -->
+<section class="slide" data-tip="用「講話測試」教強度：做的時候還能講短句、但唱不了歌，大約就是「有點吃力」。">
+  <div class="kicker">你的肌力處方箋</div>
+  <h2>記住 4 個數字，回家照著練</h2>
+  <div class="row" style="flex:1;">
+    <div class="col card"><div class="big-num" style="font-size:8vw;">2+</div><h3>每週至少 2 天</h3><div class="small">隔天練，讓肌肉休息修復</div></div>
+    <div class="col card"><div class="big-num" style="font-size:8vw;">8-12</div><h3>每個動作 8～12 下</h3><div class="small">最後 2～3 下要覺得吃力</div></div>
+    <div class="col card"><div class="big-num" style="font-size:8vw;">2-3</div><h3>每個動作 2～3 組</h3><div class="small">組間休息 1～2 分鐘</div></div>
+    <div class="col card"><div class="big-num" style="font-size:8vw;">+1</div><h3>每 1～2 週加一點</h3><div class="small">加重量、加次數或放慢下降速度</div></div>
+  </div>
+  <div class="card accent" style="margin-top:2vh;">
+    <div class="body">強度自我檢查：做的時候<span class="hl">還能講話、但沒辦法唱歌</span>，且最後幾下「有點撐」——這就是有效強度。太輕鬆＝存不到肌力。</div>
+  </div>
+</section>
+
+<!-- 問答：生活中怎麼練 -->
+<section class="slide" data-tip="逐格點開前先問學員「你會怎麼利用這個時間？」點開後全班立刻起立做一次「不用手快快站」。">
+  <div class="badge a">問答加碼</div>
+  <h2>沒空運動的日子，<br>肌肉就只能流失嗎？——點點看</h2>
+  <div class="tap-list" style="flex:1;">
+    <div class="tap-item" onclick="this.classList.add('on')">🪥 刷牙的兩分鐘<span class="ans">→ 扶洗手台踮腳尖</span></div>
+    <div class="tap-item" onclick="this.classList.add('on')">🛋️ 每一次起身<span class="ans">→ 不用手撐，快快站起</span></div>
+    <div class="tap-item" onclick="this.classList.add('on')">🛗 有樓梯的地方<span class="ans">→ 扶扶手走樓梯，少搭一層電梯</span></div>
+    <div class="tap-item" onclick="this.classList.add('on')">📺 電視廣告時間<span class="ans">→ 坐站 10 下再繼續看</span></div>
+    <div class="tap-item" onclick="this.classList.add('on')">🛒 買菜回家路上<span class="ans">→ 分兩袋平均提，走農夫走路</span></div>
+    <div class="tap-item" onclick="this.classList.add('on')">🚌 等車排隊時<span class="ans">→ 踮腳尖、夾屁股，偷偷練</span></div>
+  </div>
+  <div class="card accent" style="margin-top:1.8vh;">
+    <div class="body">穿戴裝置大型研究：每天累積 <span class="hl">3～4 分鐘</span>「讓自己有點喘」的日常活動（快步上坡、提重物），就與死亡風險<span class="hl">降低約 25～40%</span> 有關——零碎時間也算數，這叫<span class="hl-t">「運動點心」</span>，隨時吃一口。</div>
+  </div>
+  <div class="src">參考：Stamatakis 等，《自然醫學》(Nature Medicine, 2022)，逾 2.5 萬名不運動者的穿戴裝置追蹤</div>
+</section>
+
+<!-- 問答：肌肉長很慢的原因 -->
+<section class="slide" data-tip="請有練但覺得沒進步的學員舉手，這一頁就是為他們準備的。逐一自我檢查三個開關。">
+  <div class="badge a">問答加碼</div>
+  <h2>有練也有吃，肌肉還是長很慢？<br>問題最常出在——</h2>
+  <div class="quiz">
+    <button class="q-opt" onclick="quizPick(this,false)">🍗 蛋白質不夠</button>
+    <button class="q-opt" onclick="quizPick(this,false)">😴 睡眠不足</button>
+    <button class="q-opt" onclick="quizPick(this,true)">🏋️ 練得太輕</button>
+  </div>
+  <div class="reveal">
+    <div class="body" style="margin-bottom:1.5vh;">三個都關鍵，但最常見的是<span class="hl">「練太輕」</span>。年紀增長後身體有<span class="hl-t">「合成阻抗」</span>：肌肉對刺激和營養的反應變鈍，訊號必須更明確——三個開關一起打開：</div>
+    <div class="row">
+      <div class="col card accent">
+        <div class="badge">① 強度</div>
+        <div class="body">最後 2～3 下要「快撐不住」，而且<b>每 1～2 週加一點</b>。輕鬆做 20 下＝訊號太弱。</div>
+      </div>
+      <div class="col card">
+        <div class="badge a">② 蛋白質</div>
+        <div class="body">每公斤 <b>1.2 克</b>、三餐平均、每餐一掌心。有練沒吃，工地沒水泥。</div>
+      </div>
+      <div class="col card teal">
+        <div class="badge t">③ 睡眠</div>
+        <div class="body">肌肉是<b>睡覺時修復長大</b>的：深睡時分泌生長激素。長期睡不到 6 小時，練的效果打折。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 16 30秒坐站測試 -->
+<section class="slide" data-tip="先示範標準動作：雙手抱胸、完全站直、坐下屁股碰椅。全班一起測，請學員自己默數次數。">
+  <div class="kicker">現場檢測</div>
+  <h2>30 秒坐站測試：你的腿力幾分？</h2>
+  <div class="row">
+    <div class="col" style="flex:1.1;">
+      <ol class="steps">
+        <li>坐椅子前 1/3，雙手交叉抱胸</li>
+        <li>計時開始：<b>完全站直 → 坐下</b>，重複越多次越好</li>
+        <li>自己默數 30 秒內完成幾次</li>
+      </ol>
+      <div class="safety">⚠ 椅子靠牆固定．頭暈、膝痛立刻停止</div>
+    </div>
+    <div class="col timer-box" style="justify-content:center;">
+      <div class="timer-digits" id="timerDigits">30</div>
+      <div style="display:flex;gap:1.5vw;">
+        <button class="timer-btn" id="timerBtn" onclick="timerStart()">開始計時</button>
+        <button class="timer-btn reset" onclick="timerReset()">重來</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 17 常模 -->
+<section class="slide" data-tip="唸出自己年齡層的標準即可，不需登記分數；提醒低於標準不是壞消息，是「進步空間最大」的訊號。">
+  <div class="kicker">對照看看</div>
+  <h2>30 秒坐站：一般水準參考（次數）</h2>
+  <table>
+    <tr><th>年齡</th><th>男性</th><th>女性</th></tr>
+    <tr><td>65–69 歲</td><td>12～18 次</td><td>11～16 次</td></tr>
+    <tr><td>70–74 歲</td><td>12～17 次</td><td>10～15 次</td></tr>
+    <tr><td>75–79 歲</td><td>11～17 次</td><td>10～15 次</td></tr>
+    <tr><td>80–84 歲</td><td>10～15 次</td><td>9～14 次</td></tr>
+  </table>
+  <div class="card accent" style="margin-top:2vh;">
+    <div class="body">未達下限，或做不到 <span class="hl">8～10 次</span>：下肢肌力亮黃燈、跌倒風險升高——<span class="hl-t">今天的動作就是為你設計的</span>。12 週後我們再測一次，看自己進步多少。</div>
+  </div>
+  <div class="src">參考：Rikli &amp; Jones 高齡體適能常模；ICOPE 長者量六力「行動」面向亦採坐站測試</div>
+</section>
+
+<!-- 最新研究快報 1 -->
+<section class="slide" data-tip="這一頁是給社區班的定心丸：不是只有上健身房舉很重才有效，彈力帶做到「有點吃力」＋規律，就在有效劑量內。">
+  <div class="kicker">最新研究快報 2024–2025</div>
+  <div class="badge">快報 1｜訓練劑量</div>
+  <h2>2025 年統合分析：<span class="hl">中等重量，也很有效</span></h2>
+  <div class="body">彙整 13 個隨機試驗、711 位肌少症長者（平均約 68 歲）的劑量反應分析發現：</div>
+  <div class="row" style="margin-top:1.8vh;">
+    <div class="col card accent"><h3>強度</h3><div class="body">最大力量的 <span class="hl">3～7 成半</span>都有效，最佳點約在<b>中等強度（約 5 成）</b>——彈力帶、沙包、自身體重都做得到</div></div>
+    <div class="col card"><h3>頻率</h3><div class="body">每週 <span class="hl">2～5 次</span>都有效，最佳約 <b>3 次</b>；組數 2～8 組皆可</div></div>
+    <div class="col card teal"><h3>結論</h3><div class="body">劑量呈「<b>適量最好</b>」的倒 U 曲線，而且——<span class="hl-t">有練永遠比沒練好</span></div></div>
+  </div>
+  <div class="body" style="margin-top:1.8vh;">搭配 LISA 的啟示：<span class="hl">體能好、想存長期本錢的人往較重練</span>；<span class="hl-t">已有肌少症的長者，中等強度規律做就見效</span>——依自己的狀態選版本。</div>
+  <div class="src">Li 等，Frontiers in Physiology 2025（貝氏網絡統合分析，握力為指標）</div>
+</section>
+
+<!-- 最新研究快報 2 -->
+<section class="slide" data-tip="連結骨質疏鬆議題：練肌力時骨頭同時受力，肌肉、骨骼是同一組股東。">
+  <div class="kicker">最新研究快報 2024–2025</div>
+  <div class="badge">快報 2｜順便存骨本</div>
+  <h2>同一批 LISA 受試者：<br>較重阻力訓練，<span class="hl">骨頭也受益</span></h2>
+  <div class="row">
+    <div class="col card accent">
+      <div class="body">2025 年發表的 LISA 延伸分析：健康長者做<span class="hl">較重阻力訓練</span>後，血液中的<b>骨形成指標短期提升</b>——肌肉出力拉動骨骼，骨頭就收到「要變強」的訊號。</div>
+    </div>
+    <div class="col card teal">
+      <div class="body">意義：肌力訓練是<span class="hl-t">「一次繳費、兩份保單」</span>——防肌少症，同時對抗骨質流失；對停經後骨鬆風險較高的女性尤其重要。負重、站姿動作效果最好。</div>
+    </div>
+  </div>
+  <div class="src">Bloch-Ibenfeldt 等，Bone 2025（LISA 研究骨代謝指標分析）</div>
+</section>
+
+<!-- 最新研究快報 3 -->
+<section class="slide" data-tip="給有三高、心臟病史學員的官方背書：不是「能不能練」，而是「怎麼安全地練」。個別狀況仍請與醫師確認。">
+  <div class="kicker">最新研究快報 2024–2025</div>
+  <div class="badge">快報 3｜心臟的官方背書</div>
+  <h2>美國心臟協會 2024 聲明：<br>心血管疾病患者<span class="hl">也建議做阻力訓練</span></h2>
+  <div class="body">美國心臟協會（AHA）在《Circulation》發布最新科學聲明：無論有沒有心血管疾病，都建議<span class="hl">每週至少 2 天阻力訓練</span>。規律阻力訓練與<span class="hl-t">血壓下降、血脂血糖改善、身體組成變好、憂鬱焦慮減少</span>都有關——肌力訓練同時是心臟的朋友。</div>
+  <div class="card accent" style="margin-top:2vh;">
+    <div class="body">搭配今天的安全守則：<b>出力吐氣不憋氣、循序漸進、避免長時間閉氣用力</b>，有心臟病史者訓練前與醫師確認——就能安心把這份處方領回家。</div>
+  </div>
+  <div class="src">Paluch 等，美國心臟協會科學聲明，Circulation 2024</div>
+</section>
+
+<!-- 18 段落頁：動作操作 -->
+<section class="slide dark center" data-tip="器材：每人一張穩固椅子、一條長彈力帶、兩瓶裝水寶特瓶。動作間穿插口令「快快起、慢慢落」。">
+  <div class="kicker">第三部分</div>
+  <h1>動作操作</h1>
+  <div class="body" style="margin-top:3vh;font-size:2.7vw;">六個動作 = 一套「不求人」的本錢<br>每個動作都有<span style="color:var(--amber)">加強版</span>和<span style="color:#7fd4dc">輕鬆版</span>，選自己的版本</div>
+</section>
+
+<!-- 19 動作1 坐站 -->
+<section class="slide" data-tip="全場最重要的一個動作。巡場檢查：膝蓋對腳尖、站直夾臀。">
+  <div class="move-head"><span class="move-emoji">🪑</span><h2>動作 1｜椅子坐站</h2><span class="badge t">練：起身力・爆發力</span></div>
+  <div class="row">
+    <div class="col" style="flex:1.3;">
+      <ol class="steps">
+        <li>坐椅子前 1/3，雙腳與肩同寬、稍微後收</li>
+        <li>身體前傾「鼻子超過腳尖」，<b>快速站直</b></li>
+        <li>數 3 秒<b>慢慢坐回</b>，屁股輕碰椅面再起</li>
+      </ol>
+      <div class="safety">⚠ 膝蓋對準腳尖，不內夾；起身吐氣不憋氣</div>
+    </div>
+    <div class="col">
+      <div class="dose">8～12 下 × 2～3 組</div>
+      <div class="lv up"><b>🔥 加強版：</b>雙手抱水瓶於胸前／不用手撐、站起速度更快</div>
+      <div class="lv down"><b>🌱 輕鬆版：</b>墊高椅面（加坐墊）／雙手扶膝或扶手幫忙推</div>
+    </div>
+  </div>
+</section>
+
+<!-- 20 動作2 靠椅深蹲 -->
+<section class="slide" data-tip="怕蹲的學員給口令「屁股往後找椅子」，不是往下跪。">
+  <div class="move-head"><span class="move-emoji">🦵</span><h2>動作 2｜扶椅半蹲</h2><span class="badge t">練：大腿・臀部</span></div>
+  <div class="row">
+    <div class="col" style="flex:1.3;">
+      <ol class="steps">
+        <li>站椅背後方，雙手輕扶椅背</li>
+        <li>屁股<b>往後往下</b>坐，像要坐一張隱形椅子</li>
+        <li>蹲到大腿有感（不必太深），快速站起夾臀</li>
+      </ol>
+      <div class="safety">⚠ 膝蓋不超過腳尖太多；背打直、眼看前方</div>
+    </div>
+    <div class="col">
+      <div class="dose">8～12 下 × 2～3 組</div>
+      <div class="lv up"><b>🔥 加強版：</b>蹲低一點／蹲到底停 3 秒再起／指尖輕點椅背就好</div>
+      <div class="lv down"><b>🌱 輕鬆版：</b>只蹲一點點／雙手實扶椅背分擔重量</div>
+    </div>
+  </div>
+</section>
+
+<!-- 21 動作3 提踵 -->
+<section class="slide" data-tip="小腿是「第二心臟」，順帶連結循環與走路推進力。">
+  <div class="move-head"><span class="move-emoji">🦶</span><h2>動作 3｜扶椅提踵（踮腳尖）</h2><span class="badge t">練：小腿・走路推進力</span></div>
+  <div class="row">
+    <div class="col" style="flex:1.3;">
+      <ol class="steps">
+        <li>站椅背後方，雙手輕扶，雙腳與肩同寬</li>
+        <li><b>快速踮起</b>腳尖到最高，感覺小腿收緊</li>
+        <li>數 3 秒慢慢放下，腳跟輕觸地再起</li>
+      </ol>
+      <div class="safety">⚠ 身體垂直向上，不前傾壓椅背</div>
+    </div>
+    <div class="col">
+      <div class="dose">10～15 下 × 2～3 組</div>
+      <div class="lv up"><b>🔥 加強版：</b>單腳提踵／踮到最高停 2 秒</div>
+      <div class="lv down"><b>🌱 輕鬆版：</b>坐姿提踵，膝上放水瓶增加重量</div>
+    </div>
+  </div>
+</section>
+
+<!-- 22 動作4 側抬腿 -->
+<section class="slide" data-tip="髖外展是防跌關鍵肌群，走路會晃的學員特別需要。">
+  <div class="move-head"><span class="move-emoji">🧍</span><h2>動作 4｜扶椅側抬腿</h2><span class="badge t">練：髖側肌群・走路穩定</span></div>
+  <div class="row">
+    <div class="col" style="flex:1.3;">
+      <ol class="steps">
+        <li>單手扶椅背，身體站直</li>
+        <li>一腳<b>向正側邊</b>抬起，腳尖朝前不外轉</li>
+        <li>慢慢放回，同腳做完換邊</li>
+      </ol>
+      <div class="safety">⚠ 上半身不歪斜；抬的高度以骨盆不動為準</div>
+    </div>
+    <div class="col">
+      <div class="dose">每邊 10～12 下 × 2 組</div>
+      <div class="lv up"><b>🔥 加強版：</b>彈力帶打結成圈套在腳踝上方再抬</div>
+      <div class="lv down"><b>🌱 輕鬆版：</b>坐姿雙膝外開，用手在膝外側輕壓對抗</div>
+    </div>
+  </div>
+</section>
+
+<!-- 23 動作5 彈力帶划船 -->
+<section class="slide" data-tip="口令「肩胛骨夾一顆核桃」。帶子繞腳掌要踩穩，先檢查再開始。">
+  <div class="move-head"><span class="move-emoji">🚣</span><h2>動作 5｜坐姿彈力帶划船</h2><span class="badge t">練：背肌・握力・好體態</span></div>
+  <div class="row">
+    <div class="col" style="flex:1.3;">
+      <ol class="steps">
+        <li>坐穩，彈力帶繞過雙腳腳掌，雙手抓帶</li>
+        <li>手肘沿身側<b>快速往後拉</b>，肩胛骨向中間夾</li>
+        <li>數 3 秒慢慢放回，帶子全程保持張力</li>
+      </ol>
+      <div class="safety">⚠ 肩膀放鬆不聳肩；腰背打直不後仰</div>
+    </div>
+    <div class="col">
+      <div class="dose">10～12 下 × 2～3 組</div>
+      <div class="lv up"><b>🔥 加強版：</b>手往下多抓一段，帶子變短變緊</div>
+      <div class="lv down"><b>🌱 輕鬆版：</b>帶子放長一點，張力變小</div>
+    </div>
+  </div>
+</section>
+
+<!-- 24 動作6 農夫走路 -->
+<section class="slide" data-tip="這是最有生活感的動作，直接連結「自己提菜回家」。場地小可改原地踏步持物。">
+  <div class="move-head"><span class="move-emoji">🛍️</span><h2>動作 6｜提物走路（農夫走路）</h2><span class="badge t">練：握力・核心・提菜力</span></div>
+  <div class="row">
+    <div class="col" style="flex:1.3;">
+      <ol class="steps">
+        <li>雙手各提一瓶裝水寶特瓶，站直收下巴</li>
+        <li>肩膀下沉、核心收緊，<b>抬頭挺胸往前走</b></li>
+        <li>走 10～15 步折返，全程身體不左右晃</li>
+      </ol>
+      <div class="safety">⚠ 路線淨空無障礙物；重量從輕開始</div>
+    </div>
+    <div class="col">
+      <div class="dose">來回 2～4 趟</div>
+      <div class="lv up"><b>🔥 加強版：</b>只提單邊（像提菜籃），身體仍保持正直——更練核心</div>
+      <div class="lv down"><b>🌱 輕鬆版：</b>原地站姿持瓶 30 秒，或扶牆走短距離</div>
+    </div>
+  </div>
+</section>
+
+<!-- 25 生活對應 -->
+<section class="slide" data-tip="逐格點開前先問「這件事靠哪個動作？」讓學員自己配對，配對就是複習。">
+  <div class="kicker">學了就用</div>
+  <h2>點點看：生活裡的每件事，都有對應的訓練</h2>
+  <div class="tap-list" style="flex:1;">
+    <div class="tap-item" onclick="this.classList.add('on')">🚽 從馬桶自己起身<span class="ans">→ 椅子坐站</span></div>
+    <div class="tap-item" onclick="this.classList.add('on')">🪜 爬樓梯、上公車<span class="ans">→ 扶椅半蹲</span></div>
+    <div class="tap-item" onclick="this.classList.add('on')">🚶 走路有力不拖步<span class="ans">→ 提踵</span></div>
+    <div class="tap-item" onclick="this.classList.add('on')">🌀 走路不晃、不易跌<span class="ans">→ 側抬腿</span></div>
+    <div class="tap-item" onclick="this.classList.add('on')">🫙 開瓶罐、拉重門<span class="ans">→ 彈力帶划船</span></div>
+    <div class="tap-item" onclick="this.classList.add('on')">🛒 買菜自己提回家<span class="ans">→ 提物走路</span></div>
+  </div>
+  <div class="body" style="margin-top:1.5vh;">這就是「<span class="hl">不求人</span>」的訓練邏輯：<b>練什麼，生活就赢什麼。</b></div>
+</section>
+
+<!-- 26 安全守則 -->
+<section class="slide" data-tip="「痠 vs 痛」用一句話收：肌肉痠是存款入帳，關節刺痛是警報響——響了就停。">
+  <div class="kicker">安全第一</div>
+  <h2>三個守則，練得久才是贏家</h2>
+  <div class="row" style="flex:1;">
+    <div class="col card">
+      <div style="font-size:4.5vw;">🌬️</div>
+      <h3>不憋氣</h3>
+      <div class="body">出力時吐氣、放鬆時吸氣。<br>憋氣會讓血壓瞬間飆高。</div>
+    </div>
+    <div class="col card">
+      <div style="font-size:4.5vw;">🔔</div>
+      <h3>分清痠與痛</h3>
+      <div class="body"><span class="hl-t">肌肉痠脹</span> = 正常，1～2 天會退<br><span class="hl">關節刺痛、麻</span> = 立刻停止調整</div>
+    </div>
+    <div class="col card">
+      <div style="font-size:4.5vw;">🐢</div>
+      <h3>慢慢加</h3>
+      <div class="body">每 1～2 週只加「一點點」：<br>重一點、多兩下、或落下更慢。</div>
+    </div>
+  </div>
+  <div class="small" style="margin-top:1.5vh;">有心血管疾病、關節置換、骨質疏鬆病史者，開始前請與醫師或治療師確認動作選擇。</div>
+</section>
+
+<!-- 27 帶回家 -->
+<section class="slide" data-tip="用 4F 收尾：今天做了什麼(Fact)→哪個最有感(Feeling)→發現了什麼(Finding)→回家要練哪兩個(Future)。口頭分享即可，不發學習單。">
+  <div class="kicker">本週任務</div>
+  <h2>回家只要記住這一件事</h2>
+  <div class="card accent" style="margin:1vh 0 2vh;">
+    <div class="body" style="font-size:2.9vw;">從六個動作挑 <span class="hl">2 個</span>，<span class="hl">每週練 2 天</span>，每次 <span class="hl">8～12 下 × 2 組</span>，配口訣「<b>快快起、慢慢落</b>」。</div>
+  </div>
+  <div class="row">
+    <div class="col card">
+      <h3>💬 互相說說看</h3>
+      <div class="body">今天哪個動作<b>最有感</b>？<br>你想先從哪 2 個開始？<br>打算安排在每週哪兩天？</div>
+    </div>
+    <div class="col card teal">
+      <h3>✋ 加碼提醒</h3>
+      <div class="body">每餐<b>一掌心</b>蛋白質<br>練完盡快補充一份<br>（一顆蛋、一杯豆漿都算）</div>
+    </div>
+  </div>
+</section>
+
+<!-- 28 結尾 -->
+<section class="slide dark center" data-tip="請全班一起大聲唸結尾金句，再帶一次坐站互相擊掌結束。">
+  <div class="kicker">今天的結論</div>
+  <h1>肌力，是你幫自己保的<br><span style="color:var(--amber)">「不求人保險」</span></h1>
+  <div class="body" style="margin-top:3.5vh;font-size:2.8vw;">練 1 年，效果存 4 年。<br>90 歲開始，都來得及。</div>
+  <div class="small" style="margin-top:4vh;">下週見——記得：快快起、慢慢落 💪</div>
+</section>
+
+</div>
+<div class="tipbar" id="tipbar"></div>
+<div class="nav">
+  <button onclick="go(-1)">◀ 上一頁</button>
+  <div style="display:flex;gap:1.5vw;align-items:center;">
+    <span class="page-ind" id="pageInd">1 / 1</span>
+    <button class="tip-toggle" onclick="toggleTip()">帶領提示</button>
+  </div>
+  <button onclick="go(1)">下一頁 ▶</button>
+</div>
+<script>
+const slides=[...document.querySelectorAll('.slide')];
+let cur=0;
+const tipbar=document.getElementById('tipbar');
+let tipsOn=false;
+
+function render(){
+  slides.forEach((s,i)=>s.classList.toggle('active',i===cur));
+  document.getElementById('pageInd').textContent=(cur+1)+' / '+slides.length;
+  document.getElementById('progress').style.width=((cur+1)/slides.length*100)+'%';
+  updateTip();
+}
+function go(d){
+  cur=Math.min(slides.length-1,Math.max(0,cur+d));
+  render();
+  slides[cur].scrollTop=0;
+}
+function updateTip(){
+  const tip=slides[cur].dataset.tip;
+  if(tipsOn&&tip){tipbar.textContent=tip;tipbar.classList.add('show');}
+  else{tipbar.classList.remove('show');}
+}
+function toggleTip(){tipsOn=!tipsOn;updateTip();}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();go(1);}
+  if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(-1);}
+  if(e.key==='Home'){cur=0;render();}
+  if(e.key==='End'){cur=slides.length-1;render();}
+  if(e.key.toLowerCase()==='t'){toggleTip();}
+});
+
+/* 手機滑動 */
+let tx=0,ty=0;
+document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:true});
+document.addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].clientX-tx;
+  const dy=e.changedTouches[0].clientY-ty;
+  if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5){go(dx<0?1:-1);}
+},{passive:true});
+
+/* OX 迷思：isAnswer=true 代表這顆按鈕是正解 */
+function oxPick(btn,isAnswer){
+  const wrap=btn.closest('.slide');
+  const buttons=wrap.querySelectorAll('.ox-btn');
+  buttons.forEach(b=>{
+    b.disabled=true;
+    if(b.getAttribute('onclick').includes('true')){b.classList.add('picked-right');}
+    else{b.classList.add('picked-wrong');}
+  });
+  const r=wrap.querySelector('.reveal');
+  if(r)r.classList.add('open');
+}
+
+/* 選擇題 */
+function quizPick(btn,isRight){
+  const wrap=btn.closest('.slide');
+  wrap.querySelectorAll('.q-opt').forEach(b=>{
+    b.disabled=true;
+    if(b.getAttribute('onclick').includes('true')){b.classList.add('right');}
+    else{b.classList.add('wrong');}
+  });
+  const r=wrap.querySelector('.reveal');
+  if(r)r.classList.add('open');
+}
+
+/* 30 秒計時器 */
+let tHandle=null,tLeft=30;
+const tDigits=()=>document.getElementById('timerDigits');
+function timerStart(){
+  if(tHandle)return;
+  tLeft=30;
+  tDigits().classList.remove('done');
+  tDigits().textContent=tLeft;
+  beep(660,.08);
+  tHandle=setInterval(()=>{
+    tLeft--;
+    tDigits().textContent=tLeft;
+    if(tLeft<=5&&tLeft>0)beep(520,.06);
+    if(tLeft<=0){
+      clearInterval(tHandle);tHandle=null;
+      tDigits().textContent='完成!';
+      tDigits().classList.add('done');
+      beep(880,.4);
+    }
+  },1000);
+}
+function timerReset(){
+  if(tHandle){clearInterval(tHandle);tHandle=null;}
+  tLeft=30;
+  tDigits().classList.remove('done');
+  tDigits().textContent=tLeft;
+}
+function beep(freq,dur){
+  try{
+    const ctx=beep.ctx||(beep.ctx=new (window.AudioContext||window.webkitAudioContext)());
+    const o=ctx.createOscillator(),g=ctx.createGain();
+    o.frequency.value=freq;o.connect(g);g.connect(ctx.destination);
+    g.gain.setValueAtTime(.15,ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+dur);
+    o.start();o.stop(ctx.currentTime+dur);
+  }catch(e){}
+}
+render();
+
+</script>
+</body>
+</html>
