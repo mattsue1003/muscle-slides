@@ -26,12 +26,13 @@ body{font-family:"Noto Sans TC","Microsoft JhengHei","PingFang TC",sans-serif;co
   padding:3.6vh 4.5vw 10vh;
   display:none;flex-direction:column;
   background:var(--paper);
-  overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+  overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;touch-action:pan-y;
 }
 .slide > *{flex-shrink:0;}
 .slide::-webkit-scrollbar{width:1vh;}
 .slide::-webkit-scrollbar-thumb{background:var(--amber);border-radius:1vh;}
-.slide.active{display:flex;animation:fadein .35s ease;}
+.slide.active{display:flex;}
+.slide.active .fit{animation:fadein .35s ease;}
 @keyframes fadein{from{opacity:0;}to{opacity:1;}}
 .slide.dark{background:var(--ink);color:#FFF9F0;}
 
@@ -370,6 +371,17 @@ tr:last-child td{border-bottom:none;}
 
 /* ---------- 手機直式：改用固定字級、卡片改直排 ---------- */
 @media (max-width: 700px), (orientation: portrait){
+  .slide.active{display:block !important;}
+  .slide.active.dark{display:flex !important;flex-direction:column;justify-content:center;}
+  .fit{display:block !important;flex:none !important;min-height:0 !important;height:auto !important;}
+  .fit > *{display:block;}
+  .fit > .badge,.fit > .kicker{display:inline-block;}
+  .fit > .row{display:flex !important;}
+  .fit > .quiz,.fit > .ox-row,.fit > .vids,.fit > .shots,.fit > .stats,.fit > .bars2,.fit > .move-head,.fit > .bio{display:flex !important;}
+  .fit > table{display:table;}
+  .col{flex:0 0 auto !important;width:100% !important;min-height:0 !important;}
+  .row{flex-direction:column !important;flex:0 0 auto !important;}
+  img{max-width:100%;}
   /* 手機：覆寫行內 vw 字級，避免縮到看不見 */
   .body[style*="font-size"]{font-size:16px !important;line-height:1.6 !important;}
   .small[style*="font-size"]{font-size:13px !important;}
@@ -2866,6 +2878,10 @@ function render(){
   slides.forEach((s,i)=>s.classList.toggle('active',i===cur));
   document.getElementById('pageInd').textContent=(cur+1)+' / '+slides.length;
   document.getElementById('progress').style.width=((cur+1)/slides.length*100)+'%';
+  const s=slides[cur];
+  s.scrollTop=0;
+  /* iOS：display 切換後強制重新建立 scroll 容器 */
+  requestAnimationFrame(()=>{s.style.overflowY='hidden';void s.offsetHeight;s.style.overflowY='';});
   if(typeof updateHint==='function'){setTimeout(updateHint,60);}
 }
 function go(d){
@@ -3009,12 +3025,23 @@ document.addEventListener('keydown',e=>{
 });
 
 /* 手機滑動 */
-let tx=0,ty=0;
-document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:true});
+let tx=0,ty=0,tt=0,swipeLock=false;
+document.addEventListener('touchstart',e=>{
+  if(e.touches.length!==1)return;
+  tx=e.touches[0].clientX;ty=e.touches[0].clientY;tt=Date.now();swipeLock=false;
+},{passive:true});
+document.addEventListener('touchmove',e=>{
+  if(e.touches.length!==1)return;
+  const dy=Math.abs(e.touches[0].clientY-ty), dx=Math.abs(e.touches[0].clientX-tx);
+  if(dy>14&&dy>=dx)swipeLock=true;   /* 一旦判定為垂直捲動，本次手勢不換頁 */
+},{passive:true});
 document.addEventListener('touchend',e=>{
+  if(swipeLock)return;
+  if(e.target.closest('.modal,.toc,.nav,input,button'))return;
   const dx=e.changedTouches[0].clientX-tx;
   const dy=e.changedTouches[0].clientY-ty;
-  if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5){go(dx<0?1:-1);}
+  const dt=Date.now()-tt;
+  if(Math.abs(dx)>90&&Math.abs(dx)>Math.abs(dy)*2.5&&dt<600){go(dx<0?1:-1);}
 },{passive:true});
 
 /* OX 迷思：isAnswer=true 代表這顆按鈕是正解 */
