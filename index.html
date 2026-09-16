@@ -200,6 +200,21 @@ tr:last-child td{border-bottom:none;}
 .toc-close{background:#8a9a97;}
 .nav-menu{background:var(--teal) !important;border-color:var(--teal) !important;}
 
+/* ---------- QR Code ---------- */
+.qr-box{display:flex;align-items:center;gap:1.8vw;background:#fff;color:var(--ink);border-radius:1.6vh;padding:1.4vh 1.6vw;box-shadow:0 .6vh 2vh rgba(0,0,0,.25);}
+.qr-box img{width:22vh;height:22vh;display:block;flex-shrink:0;image-rendering:pixelated;}
+.qr-txt{text-align:left;line-height:1.35;}
+.qr-txt b{display:block;font-size:2vw;color:var(--ink);}
+.qr-txt span{display:block;font-size:1.45vw;color:var(--teal);font-weight:700;word-break:break-all;margin-top:.5vh;}
+.qr-txt small{display:block;font-size:1.3vw;color:#5c6f74;margin-top:.4vh;}
+.cover-qr{margin-top:3.5vh;display:flex;justify-content:center;}
+@media (max-width: 700px), (orientation: portrait){
+  .qr-box{gap:12px;padding:12px 14px;}
+  .qr-box img{width:150px;height:150px;}
+  .qr-txt b{font-size:16px;} .qr-txt span{font-size:13px;} .qr-txt small{font-size:12px;}
+  .cover-qr{margin-top:20px;}
+}
+
 /* ---------- 導覽 ---------- */
 .nav{
   position:fixed;bottom:0;left:0;right:0;height:7vh;z-index:50;
@@ -374,13 +389,7 @@ tr:last-child td{border-bottom:none;}
   .slide.active{display:block !important;}
   .slide.active.dark{display:flex !important;flex-direction:column;justify-content:center;}
   .fit{display:block !important;flex:none !important;min-height:0 !important;height:auto !important;}
-  .fit > *{display:block;}
-  .fit > .reveal:not(.open){display:none !important;}
-  .fit > .sts-result:not(.show){display:none !important;}
-  .fit > .badge,.fit > .kicker{display:inline-block;}
-  .fit > .row{display:flex !important;}
-  .fit > .quiz,.fit > .ox-row,.fit > .vids,.fit > .shots,.fit > .stats,.fit > .bars2,.fit > .move-head,.fit > .bio{display:flex !important;}
-  .fit > table{display:table;}
+  .fit > *{margin-bottom:0;}
   .col{flex:0 0 auto !important;width:100% !important;min-height:0 !important;}
   .row{flex-direction:column !important;flex:0 0 auto !important;}
   img{max-width:100%;}
@@ -474,6 +483,10 @@ tr:last-child td{border-bottom:none;}
   .ba-tag{font-size:14px !important;}
   .ba-btn{font-size:15px !important;}
 }
+/* ===== 隱藏狀態保險（最高優先權，任何情況都不得提前露出） ===== */
+.slide .reveal:not(.open){display:none !important;}
+.slide .tap-item:not(.on) .ans{display:none !important;}
+.slide .ox-btn.picked-right,.slide .ox-btn.picked-wrong,.slide .q-opt.right,.slide .q-opt.wrong{pointer-events:none;}
   </style>
 </head>
 <body>
@@ -483,8 +496,12 @@ tr:last-child td{border-bottom:none;}
 <section class="slide dark center">
   <div class="kicker">竹東工研院線上課</div>
   <h1>撐住健康的力氣<br><span style="color:var(--amber)">從預防肌少症開始</span></h1>
-  <div class="body" style="margin-top:3vh;font-size:2.8vw;">給 20～65 歲工作者的肌肉保衛戰</div>
-  <div class="small" style="margin-top:4vh;">評估標準・最新研究・骨鬆共病・實作訓練——兩小時一次帶走</div>
+  <div class="body" style="margin-top:2vh;font-size:2.8vw;">給 20～65 歲工作者的肌肉保衛戰</div>
+  <div class="small" style="margin-top:1.5vh;">評估標準・最新研究・骨鬆共病・實作訓練——兩小時一次帶走</div>
+  <div class="cover-qr"><div class="qr-box">
+    <img src="data:image/png;base64,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" alt="簡報連結 QR Code">
+    <div class="qr-txt"><b>📱 掃描取得本簡報</b><span>mattsue1003.github.io/muscle-slides</span><small>手機、平板、電腦都能開，回家隨時複習</small></div>
+  </div></div>
 </section>
 
 <!-- 2 講師介紹 -->
@@ -965,6 +982,73 @@ tr:last-child td{border-bottom:none;}
 </section>
 
 <!-- 5 什麼是肌少症 -->
+<!-- 盛行率現況 -->
+<section class="slide">
+  <div class="kicker">最新現況｜肌少症有多普遍</div>
+  <h2>全球每 5 位社區長者，<span class="hl">就有約 1 位</span></h2>
+  <div class="row">
+    <div class="col card accent" style="padding:1.3vh 1.1vw;">
+      <div class="badge">2025 年統合分析</div>
+      <div class="body" style="font-size:1.85vw;">彙整 <b>52 篇研究、70,202 位</b>社區長者：<br>整體盛行率約 <span class="hl">18.7%</span>，男女幾乎相同<br>（男 18.7%、女 18.8%）</div>
+      <div class="body" style="font-size:1.75vw;margin-top:1vh;">歐洲 23.4%　∙　<b>亞洲 17.9%</b><br>用亞洲標準（AWGS 2019）估計約 <b>19.1%</b></div>
+    </div>
+    <div class="col card teal" style="padding:1.3vh 1.1vw;">
+      <div class="badge t">場域差很多</div>
+      <table style="margin-top:.6vh;">
+        <tr><th>族群</th><th>盛行率</th></tr>
+        <tr><td>社區長者</td><td>約 1～3 成</td></tr>
+        <tr><td>住機構長者</td><td><span class="hl">14～33%</span></td></tr>
+        <tr><td>80 歲以上</td><td><span class="hl">最高可達 5 成</span></td></tr>
+      </table>
+      <div class="small" style="margin-top:.8vh;">數字會隨診斷標準與量測方法而變，同一國家不同研究可差好幾倍。</div>
+    </div>
+    <div class="col card" style="padding:1.3vh 1.1vw;">
+      <div class="badge a">為什麼現在更該注意</div>
+      <div class="body" style="font-size:1.85vw;">① 台灣已是<b>超高齡社會</b>，65 歲以上超過兩成<br>② 肌少症與<b>糖尿病、骨鬆、跌倒、失能</b>互相加速<br>③ 它<span class="hl">從 40 歲就開始</span>——今天在線上的每一位都在射程內</div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:1.4vh;">
+    <div class="body">一句話：<span class="hl">肌少症不是少數人的病</span>，而是隨年齡逼近多數人的常態——差別只在誰有提早準備。</div>
+  </div>
+  <div class="src">參考：社區長者肌少症盛行率與相關因子統合分析（Gerontology 2025/2026，52 篇研究）；社區／機構／高齡分層盛行率整理（AWGS 2019 應用研究）。台灣本地數據見後頁互動題。</div>
+</section>
+
+<!-- 危險因子 -->
+<section class="slide">
+  <div class="kicker">誰比較容易得？</div>
+  <h2>肌少症的<span class="hl">危險因子</span>——大多數是可以改變的</h2>
+  <div class="row">
+    <div class="col" style="flex:1.2;">
+      <table>
+        <tr><th>危險因子</th><th>風險倍數</th><th>可改變？</th></tr>
+        <tr><td>體重過輕（BMI 偏低）</td><td><span class="hl">3.8 倍</span></td><td>✅</td></tr>
+        <tr><td>睡太少（&lt;6 小時）</td><td><span class="hl">3.3 倍</span></td><td>✅</td></tr>
+        <tr><td>營養不良／蛋白質不足</td><td><span class="hl">3.0 倍</span></td><td>✅</td></tr>
+        <tr><td>骨質疏鬆</td><td>2.7 倍</td><td>部分</td></tr>
+        <tr><td>睡太多（&gt;9 小時）</td><td>2.3 倍</td><td>✅</td></tr>
+        <tr><td><b>缺乏身體活動</b></td><td>1.7 倍</td><td>✅</td></tr>
+        <tr><td>憂鬱</td><td>1.5 倍</td><td>✅</td></tr>
+        <tr><td>糖尿病</td><td>1.4 倍</td><td>部分</td></tr>
+        <tr><td>抽菸</td><td>1.2 倍</td><td>✅</td></tr>
+      </table>
+    </div>
+    <div class="col">
+      <div class="card accent" style="padding:1.3vh 1.1vw;">
+        <div class="badge">看懂這張表</div>
+        <div class="body" style="font-size:1.85vw;">排在最前面的三個——<span class="hl">太瘦、睡不夠、吃不夠</span>——都不是「老」，而是<b>生活型態</b>。上班族最常同時中兩項：睡不夠＋蛋白質不足。</div>
+      </div>
+      <div class="card teal" style="padding:1.3vh 1.1vw;margin-top:1.1vh;">
+        <div class="badge t">兩個提醒</div>
+        <div class="body" style="font-size:1.8vw;">① <b>年齡每多 1 歲，風險約增 12%</b>——不動的話，時間站在肌少症那邊<br>② <b>糖尿病者風險高 4 成</b>，肌少症現在被視為糖尿病的併發症之一；反過來，肌肉多、血糖也更好控制</div>
+      </div>
+      <div class="card" style="padding:1.3vh 1.1vw;margin-top:1.1vh;">
+        <div class="body" style="font-size:1.8vw;">其他相關因子：認知功能下降、獨居（各約 1.6 倍）。飲酒則<span class="hl-t">未見</span>顯著關聯——但酒精傷的是其他器官。</div>
+      </div>
+    </div>
+  </div>
+  <div class="src">參考：社區長者肌少症相關因子系統性回顧與統合分析（Gao 等，2021，含 30 餘篇研究，數值為校正勝算比 OR，四捨五入）；憂鬱與肌少症統合分析（OR 1.57）；2025 年更新之統合分析亦確認營養不良、身體活動不足、憂鬱、糖尿病、骨鬆為主要相關因子。</div>
+</section>
+
 <section class="slide">
   <div class="kicker">認識敵人</div>
   <h2>肌少症（Sarcopenia）：<br>被正式列為「疾病」的肌肉流失</h2>
@@ -991,7 +1075,7 @@ tr:last-child td{border-bottom:none;}
   <div class="reveal card accent">
     <div class="body">依亞洲標準，台灣社區 65 歲以上長者盛行率約 <span class="hl">7～10% 以上</span>，80 歲後大幅攀升。但真正的重點是——<span class="hl-t">肌肉流失從 40 歲就開始</span>，今天在線上的每一位，都正站在「預防的黃金期」。</div>
   </div>
-  <div class="src">參考：亞洲肌少症工作小組（AWGS）共識與台灣社區流行病學調查</div>
+  <div class="src">參考：台灣社區長者五個世代研究整合分析（Geriatr Gerontol Int 2014，2,867 人）；長庚大學 2025 年以 AWGS 2019 標準之台灣研究；AWGS 2019 共識</div>
 </section>
 
 <!-- 7 段落頁：評估 -->
@@ -1036,11 +1120,11 @@ tr:last-child td{border-bottom:none;}
   <div class="kicker">社區篩檢 ②｜SARC-F 自評問卷</div>
   <h2>五個問題，點開自評（0～2 分）</h2>
   <div class="tap-list" style="flex:1;">
-    <div class="tap-item" onclick="this.classList.add('on')">💪 提 4～5 公斤重物（一袋米）困難嗎？<span class="ans">沒困難 0｜有點 1｜很難 2</span></div>
-    <div class="tap-item" onclick="this.classList.add('on')">🚶 走過一個房間會吃力嗎？<span class="ans">沒困難 0｜有點 1｜很難／需協助 2</span></div>
-    <div class="tap-item" onclick="this.classList.add('on')">🪑 從椅子或床起身困難嗎？<span class="ans">沒困難 0｜有點 1｜需要人扶 2</span></div>
-    <div class="tap-item" onclick="this.classList.add('on')">🪜 爬 10 階樓梯會吃力嗎？<span class="ans">沒困難 0｜有點 1｜很難 2</span></div>
-    <div class="tap-item" onclick="this.classList.add('on')">🌀 過去一年跌倒過幾次？<span class="ans">沒有 0｜1～3 次 1｜4 次以上 2</span></div>
+    <div class="tap-item" onclick="this.classList.add('on');fitSlide()">💪 提 4～5 公斤重物（一袋米）困難嗎？<span class="ans">沒困難 0｜有點 1｜很難 2</span></div>
+    <div class="tap-item" onclick="this.classList.add('on');fitSlide()">🚶 走過一個房間會吃力嗎？<span class="ans">沒困難 0｜有點 1｜很難／需協助 2</span></div>
+    <div class="tap-item" onclick="this.classList.add('on');fitSlide()">🪑 從椅子或床起身困難嗎？<span class="ans">沒困難 0｜有點 1｜需要人扶 2</span></div>
+    <div class="tap-item" onclick="this.classList.add('on');fitSlide()">🪜 爬 10 階樓梯會吃力嗎？<span class="ans">沒困難 0｜有點 1｜很難 2</span></div>
+    <div class="tap-item" onclick="this.classList.add('on');fitSlide()">🌀 過去一年跌倒過幾次？<span class="ans">沒有 0｜1～3 次 1｜4 次以上 2</span></div>
   </div>
   <div class="card accent" style="margin-top:1.8vh;">
     <div class="body">總分 <span class="hl">≥ 4 分</span>＝篩檢陽性，建議就醫進一步評估。年輕族群多半 0 分——<span class="hl-t">這份問卷也適合帶回家幫父母做</span>。</div>
@@ -1267,6 +1351,45 @@ tr:last-child td{border-bottom:none;}
   <div class="body" style="margin-top:2vh;">終身身體活動被視為對抗肌少症<span class="hl">最有效的對策</span>——而且什麼時候開始都算數。</div>
   <div class="src">參考：ICFSR 國際臨床實務指引（J Nutr Health Aging 2018）；粒線體觀點回顧（J Physiol）；SPRINTT 多國試驗（BMJ 2022）證實運動＋營養可降低行動失能</div>
 </section>
+
+<!-- 介入實證 -->
+<section class="slide">
+  <div class="kicker">實證怎麼說｜預防與治療</div>
+  <h2>什麼最有效？<span class="hl">運動＋營養，不是二選一</span></h2>
+  <div class="row">
+    <div class="col card accent" style="padding:1.3vh 1.1vw;">
+      <div class="badge">2025 網絡統合分析</div>
+      <div class="body" style="font-size:1.8vw;">彙整 <b>35 個隨機試驗、2,331 位</b>肌少症長者，把各種方法排名：</div>
+      <table style="margin-top:.8vh;">
+        <tr><th>方法</th><th>握力</th><th>肌肉量</th><th>步速</th></tr>
+        <tr><td><b>運動＋營養</b></td><td><span class="hl">第 1</span></td><td><span class="hl">第 1</span></td><td><span class="hl">第 1</span></td></tr>
+        <tr><td>只運動</td><td>有效</td><td>有效</td><td>有效</td></tr>
+        <tr><td>只補蛋白質</td><td>有效</td><td><span class="hl">無效</span></td><td>有效</td></tr>
+      </table>
+      <div class="small" style="margin-top:.6vh;">「運動＋營養」在握力與肌肉量上顯著優於單做其中一項。</div>
+    </div>
+    <div class="col card teal" style="padding:1.3vh 1.1vw;">
+      <div class="badge t">細看：哪種組合最強</div>
+      <div class="body" style="font-size:1.8vw;"><b>阻力訓練＋蛋白質</b> → 握力與步速進步最多<br><b>阻力訓練＋蛋白質＋維生素 D</b> → 肌肉量進步最多<br><b>阻力＋平衡訓練＋營養</b> → 另一份 2024 分析的整體第一</div>
+      <div class="body" style="font-size:1.8vw;margin-top:1vh;">共同點：<span class="hl-t">核心永遠是阻力訓練</span>，營養是放大器，平衡與有氧是加分。</div>
+    </div>
+    <div class="col card" style="padding:1.3vh 1.1vw;">
+      <div class="badge a">國際指引（ICFSR）的順位</div>
+      <div class="body" style="font-size:1.8vw;">① <b>阻力訓練</b>——第一線，證據最強<br>② <b>蛋白質吃夠</b>（每公斤 1.2 克起）——強烈建議<br>③ <b>維生素 D</b>——<span class="hl">只在不足時補</span>，不是人人都要<br>④ <b>藥物</b>——目前沒有任何核准用藥<br>⑤ 熱量限制減重——<span class="hl">不建議</span>用於肌少症長者</div>
+    </div>
+  </div>
+  <div class="row" style="margin-top:1.3vh;">
+    <div class="col card accent" style="flex:1.1;">
+      <div class="badge">預防 vs 治療：做法一樣，差在起點</div>
+      <div class="body" style="font-size:1.85vw;"><b>還沒有肌少症（今天多數人）</b>：目標是把本金堆高——<span class="hl">往較重練</span>（LISA：練 1 年效果存 4 年），蛋白質每餐一掌心。<br><b>已有肌少症</b>：目標是先止跌——<span class="hl-t">中等強度、規律做就見效</span>，務必同時補營養，並在專業監督下漸進。</div>
+    </div>
+    <div class="col card">
+      <div class="body" style="font-size:1.8vw;">⚠ 誠實說：這些統合分析的證據品質多為<b>低到中等</b>（試驗規模小、做法差異大）。但方向非常一致——<span class="hl">沒有任何一份研究說「不動比較好」</span>。</div>
+    </div>
+  </div>
+  <div class="src">參考：Zhao 等，Frontiers in Nutrition 2025（貝氏網絡統合分析，35 RCT／2,331 人，EWGSOP＋AWGS 標準）；女性族群網絡統合分析 2025（21 RCT）；阻力＋平衡＋營養網絡統合分析 2024；ICFSR 國際臨床實務指引（J Nutr Health Aging 2018）；LISA 試驗 2024。</div>
+</section>
+
 
 <!-- 肌肉是內分泌器官 1 -->
 <section class="slide">
@@ -1558,12 +1681,12 @@ tr:last-child td{border-bottom:none;}
   <div class="kicker">最有效的痠痛處方</div>
   <h2>與其追求完美坐姿，<br>不如<span class="hl">每 30 分鐘打斷一次</span></h2>
   <div class="tap-list" style="flex:1;">
-    <div class="tap-item" onclick="this.classList.add('on')">⏰ 設手機／電腦提醒<span class="ans">→ 每 30 分鐘震動一次</span></div>
-    <div class="tap-item" onclick="this.classList.add('on')">🧍 起身 1～2 分鐘就夠<span class="ans">→ 走動、伸展、倒杯水</span></div>
-    <div class="tap-item" onclick="this.classList.add('on')">🪑 站坐交替<span class="ans">→ 站著開會、站著講電話</span></div>
-    <div class="tap-item" onclick="this.classList.add('on')">🙆 反向動作<span class="ans">→ 挺胸開肩、後仰伸展（抵銷前彎）</span></div>
-    <div class="tap-item" onclick="this.classList.add('on')">🍑 喚醒臀肌<span class="ans">→ 站起來做 10 下臀橋或深蹲</span></div>
-    <div class="tap-item" onclick="this.classList.add('on')">💪 每週 2～3 天肌力訓練<span class="ans">→ 提高身體的耐受度上限</span></div>
+    <div class="tap-item" onclick="this.classList.add('on');fitSlide()">⏰ 設手機／電腦提醒<span class="ans">→ 每 30 分鐘震動一次</span></div>
+    <div class="tap-item" onclick="this.classList.add('on');fitSlide()">🧍 起身 1～2 分鐘就夠<span class="ans">→ 走動、伸展、倒杯水</span></div>
+    <div class="tap-item" onclick="this.classList.add('on');fitSlide()">🪑 站坐交替<span class="ans">→ 站著開會、站著講電話</span></div>
+    <div class="tap-item" onclick="this.classList.add('on');fitSlide()">🙆 反向動作<span class="ans">→ 挺胸開肩、後仰伸展（抵銷前彎）</span></div>
+    <div class="tap-item" onclick="this.classList.add('on');fitSlide()">🍑 喚醒臀肌<span class="ans">→ 站起來做 10 下臀橋或深蹲</span></div>
+    <div class="tap-item" onclick="this.classList.add('on');fitSlide()">💪 每週 2～3 天肌力訓練<span class="ans">→ 提高身體的耐受度上限</span></div>
   </div>
   <div class="card teal" style="margin-top:1.8vh;">
     <div class="body">實驗證據：在長時間久坐中，<span class="hl-t">每 20～30 分鐘插入約 1.5～5 分鐘的輕度或中度活動</span>，就能明顯改善餐後血糖代謝——<b>比一次久坐到底好得多</b>。痠痛與代謝，一起改善。</div>
@@ -2644,12 +2767,12 @@ tr:last-child td{border-bottom:none;}
   <div class="badge a">上班族專屬</div>
   <h2>沒空運動的日子——<br>把訓練藏進工作裡，點點看</h2>
   <div class="tap-list" style="flex:1;">
-    <div class="tap-item" onclick="this.classList.add('on')">💻 每坐 1 小時<span class="ans">→ 起立深蹲 10 下再坐下</span></div>
-    <div class="tap-item" onclick="this.classList.add('on')">🛗 三層樓以內<span class="ans">→ 快步爬樓梯，不搭電梯</span></div>
-    <div class="tap-item" onclick="this.classList.add('on')">🖨️ 印表機、茶水間<span class="ans">→ 故意用遠的那一台</span></div>
-    <div class="tap-item" onclick="this.classList.add('on')">📞 講電話、開視訊<span class="ans">→ 站著講＋踮腳尖</span></div>
-    <div class="tap-item" onclick="this.classList.add('on')">🚇 通勤<span class="ans">→ 提前一站下車快走、背包當重量</span></div>
-    <div class="tap-item" onclick="this.classList.add('on')">🍱 午休前 3 分鐘<span class="ans">→ 桌邊伏地挺身＋分腿蹲各 1 組</span></div>
+    <div class="tap-item" onclick="this.classList.add('on');fitSlide()">💻 每坐 1 小時<span class="ans">→ 起立深蹲 10 下再坐下</span></div>
+    <div class="tap-item" onclick="this.classList.add('on');fitSlide()">🛗 三層樓以內<span class="ans">→ 快步爬樓梯，不搭電梯</span></div>
+    <div class="tap-item" onclick="this.classList.add('on');fitSlide()">🖨️ 印表機、茶水間<span class="ans">→ 故意用遠的那一台</span></div>
+    <div class="tap-item" onclick="this.classList.add('on');fitSlide()">📞 講電話、開視訊<span class="ans">→ 站著講＋踮腳尖</span></div>
+    <div class="tap-item" onclick="this.classList.add('on');fitSlide()">🚇 通勤<span class="ans">→ 提前一站下車快走、背包當重量</span></div>
+    <div class="tap-item" onclick="this.classList.add('on');fitSlide()">🍱 午休前 3 分鐘<span class="ans">→ 桌邊伏地挺身＋分腿蹲各 1 組</span></div>
   </div>
   <div class="card accent" style="margin-top:1.8vh;">
     <div class="body">穿戴裝置大型研究：每天累積 <span class="hl">3～4 分鐘</span>「讓自己有點喘」的日常活動，與死亡風險<span class="hl">降低約 25～40%</span> 有關——這叫<span class="hl-t">「運動點心」</span>，零碎時間也算數。</div>
@@ -2834,11 +2957,20 @@ tr:last-child td{border-bottom:none;}
   <div class="kicker">今天的結論</div>
   <h1>今天存的肌肉<br><span style="color:var(--amber)">是未來的行動自由</span></h1>
   <div class="body" style="margin-top:3.5vh;font-size:2.8vw;">肌肉要阻力，骨頭要衝擊。<br>練 1 年，效果存 4 年——90 歲開始都有效。</div>
-  <div class="small" style="margin-top:3vh;">撐住健康的力氣，從今天的 10 下深蹲開始 💪</div>
-  <div class="card" style="margin-top:3vh;background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3);max-width:70%;">
-    <div class="body" style="color:#FFF9F0;font-size:2.2vw;">📮 <b>課後有問題，歡迎來問我</b></div>
-    <div class="body" style="color:#FFF9F0;margin-top:1vh;">Facebook 粉絲專頁　<span style="color:var(--amber);font-weight:900;">愛迪樂健康促進團隊</span><br><span class="small" style="color:#c9d6d2;">搜尋「愛迪樂」即可找到，或掃描／點擊下方連結</span></div>
-    <div class="urlbar" style="margin-top:1.5vh;font-size:1.6vw;background:var(--orange);">facebook.com/profile.php?id=100063748491881</div>
+  <div class="small" style="margin-top:2vh;">撐住健康的力氣，從今天的 10 下深蹲開始 💪</div>
+  <div class="row" style="margin-top:2.5vh;align-items:stretch;justify-content:center;max-width:88%;margin-left:auto;margin-right:auto;">
+    <div class="col" style="flex:1;">
+      <div class="qr-box">
+    <img src="data:image/png;base64,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" alt="簡報連結 QR Code">
+    <div class="qr-txt"><b>📱 掃描把簡報帶回家</b><span>mattsue1003.github.io/muscle-slides</span><small>所有影片、動作、研究出處都在裡面</small></div>
+  </div>
+    </div>
+    <div class="col card" style="flex:1.1;background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3);">
+      <div class="body" style="color:#FFF9F0;font-size:2vw;">📮 <b>課後有問題，歡迎來問我</b></div>
+      <div class="body" style="color:#FFF9F0;margin-top:.8vh;font-size:2vw;">Facebook 粉絲專頁<br><span style="color:var(--amber);font-weight:900;">愛迪樂健康促進團隊</span></div>
+      <div class="small" style="color:#c9d6d2;margin-top:.6vh;">搜尋「愛迪樂」即可找到</div>
+      <div class="urlbar" style="margin-top:1vh;font-size:1.4vw;background:var(--orange);">facebook.com/profile.php?id=100063748491881</div>
+    </div>
   </div>
 </section>
 
@@ -2876,7 +3008,11 @@ tr:last-child td{border-bottom:none;}
 const slides=[...document.querySelectorAll('.slide')];
 let cur=0;
 
+function lockReveals(){
+  document.querySelectorAll('.reveal:not(.open)').forEach(r=>{r.style.display='none';});
+}
 function render(){
+  lockReveals();
   slides.forEach((s,i)=>s.classList.toggle('active',i===cur));
   document.getElementById('pageInd').textContent=(cur+1)+' / '+slides.length;
   document.getElementById('progress').style.width=((cur+1)/slides.length*100)+'%';
@@ -3056,8 +3192,8 @@ function oxPick(btn,isAnswer){
     else{b.classList.add('picked-wrong');}
   });
   const r=wrap.querySelector('.reveal');
-  if(r)r.classList.add('open');
-  setTimeout(updateHint,350);
+  if(r){r.classList.add('open');r.style.display='';}
+  fitSlide();setTimeout(()=>{fitSlide();updateHint();},350);
 }
 
 /* 選擇題 */
@@ -3069,8 +3205,8 @@ function quizPick(btn,isRight){
     else{b.classList.add('wrong');}
   });
   const r=wrap.querySelector('.reveal');
-  if(r)r.classList.add('open');
-  setTimeout(updateHint,350);
+  if(r){r.classList.add('open');r.style.display='';}
+  fitSlide();setTimeout(()=>{fitSlide();updateHint();},350);
 }
 
 /* 30 秒計時器 */
